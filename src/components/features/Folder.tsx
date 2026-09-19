@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import './Folder.css';
 
 const darkenColor = (hex: string, percent: number): string => {
@@ -19,44 +19,52 @@ interface FolderProps {
   size?: number;
   items?: React.ReactNode[];
   className?: string;
+  open?: boolean;
+  onToggle?: (open: boolean) => void;
 }
 
-const Folder = ({ color = '#5227FF', size = 1, items = [], className = '' }: FolderProps) => {
+const Folder = ({
+  color = '#5227FF',
+  size = 1,
+  items = [],
+  className = '',
+  open: propOpen,
+  onToggle
+}: FolderProps) => {
   const maxItems = 3;
   const papers = items.slice(0, maxItems);
   while (papers.length < maxItems) papers.push(null);
 
-  const [open, setOpen] = useState(false);
-  const [paperOffsets, setPaperOffsets] = useState(
-    Array.from({ length: maxItems }, () => ({ x: 0, y: 0 }))
-  );
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = propOpen !== undefined;
+  const isOpen = isControlled ? propOpen : internalOpen;
 
   const folderBackColor = darkenColor(color, 0.08);
   const paper1 = darkenColor('#ffffff', 0.1);
   const paper2 = darkenColor('#ffffff', 0.05);
   const paper3 = '#ffffff';
 
-  const handleClick = () => {
-    setOpen(prev => !prev);
-    if (open) setPaperOffsets(Array.from({ length: maxItems }, () => ({ x: 0, y: 0 })));
-  };
-
-  const handlePaperMouseMove = (e: React.MouseEvent, index: number) => {
-    if (!open) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const offsetX = (e.clientX - (rect.left + rect.width / 2)) * 0.15;
-    const offsetY = (e.clientY - (rect.top + rect.height / 2)) * 0.15;
-    setPaperOffsets(prev => { const n = [...prev]; n[index] = { x: offsetX, y: offsetY }; return n; });
-  };
-
-  const handlePaperMouseLeave = (_e: React.MouseEvent, index: number) => {
-    setPaperOffsets(prev => { const n = [...prev]; n[index] = { x: 0, y: 0 }; return n; });
-  };
+  const handleClick = useCallback((e?: React.MouseEvent | React.KeyboardEvent) => {
+    e?.stopPropagation();
+    const next = !isOpen;
+    if (!isControlled) {
+      setInternalOpen(next);
+    }
+    onToggle?.(next);
+  }, [isOpen, isControlled, onToggle]);
 
   return (
-    <div style={{ transform: `scale(${size})`, transformOrigin: "center center", display: "inline-block" }} className={className}>
+    <div
+      style={{
+        transform: `scale(${size})`,
+        transformOrigin: "center center",
+        display: "inline-block",
+        willChange: "transform"
+      }}
+      className={className}
+    >
       <div
-        className={`folder ${open ? 'open' : ''}`.trim()}
+        className={`folder ${isOpen ? 'open' : ''}`.trim()}
         style={{
           '--folder-color': color,
           '--folder-back-color': folderBackColor,
@@ -65,20 +73,17 @@ const Folder = ({ color = '#5227FF', size = 1, items = [], className = '' }: Fol
           '--paper-3': paper3,
         } as React.CSSProperties}
         onClick={handleClick}
-        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(e); } }}
         tabIndex={0}
         role="button"
-        aria-expanded={open}
-        aria-label={open ? 'Close folder' : 'Open folder'}
+        aria-expanded={isOpen}
+        aria-label={isOpen ? 'Close folder' : 'Open folder'}
       >
         <div className="folder__back">
           {papers.map((item, i) => (
             <div
               key={i}
               className={`paper paper-${i + 1}`}
-              onMouseMove={e => handlePaperMouseMove(e, i)}
-              onMouseLeave={e => handlePaperMouseLeave(e, i)}
-              style={open ? { '--magnet-x': `${paperOffsets[i]?.x || 0}px`, '--magnet-y': `${paperOffsets[i]?.y || 0}px` } as React.CSSProperties : {}}
             >
               {item}
             </div>

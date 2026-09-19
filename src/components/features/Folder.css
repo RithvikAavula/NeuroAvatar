@@ -7,55 +7,68 @@
 }
 
 .folder {
-  transition: all 0.2s ease-in;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
   cursor: pointer;
   transform-origin: center bottom;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: relative;
 }
 
-.folder:not(.folder--click):hover {
-  transform: translateY(-8px);
+/* Invisible hit expansion to prevent cursor slip when floating or translating */
+.folder::before {
+  content: '';
+  position: absolute;
+  inset: -14px -12px -14px -12px;
+  pointer-events: auto;
+  z-index: 1;
 }
 
-.folder:not(.folder--click):hover .paper {
-  transform: translate(-50%, 0%);
+.folder:not(.folder--click):not(.open):hover {
+  transform: translate3d(0, -8px, 0);
 }
 
-.folder:not(.folder--click):hover .folder__front {
+.folder:not(.folder--click):not(.open):hover .paper {
+  transform: translate3d(-50%, 0%, 0);
+}
+
+.folder:not(.folder--click):not(.open):hover .folder__front {
   transform: skew(15deg) scaleY(0.6);
 }
 
-.folder:not(.folder--click):hover .right {
+.folder:not(.folder--click):not(.open):hover .right {
   transform: skew(-15deg) scaleY(0.6);
 }
 
 .folder.open {
-  transform: translateY(-8px);
+  transform: translate3d(0, -8px, 0);
 }
 
 .folder.open .paper:nth-child(1) {
-  transform: translate(-120%, -70%) rotateZ(-15deg);
+  transform: translate3d(-120%, -70%, 0) rotateZ(-15deg);
 }
 
 .folder.open .paper:nth-child(1):hover {
-  transform: translate(-120%, -70%) rotateZ(-15deg) scale(1.1);
+  transform: translate3d(-120%, -70%, 0) rotateZ(-15deg) scale(1.08);
 }
 
 .folder.open .paper:nth-child(2) {
-  transform: translate(10%, -70%) rotateZ(15deg);
+  transform: translate3d(10%, -70%, 0) rotateZ(15deg);
   height: 80%;
 }
 
 .folder.open .paper:nth-child(2):hover {
-  transform: translate(10%, -70%) rotateZ(15deg) scale(1.1);
+  transform: translate3d(10%, -70%, 0) rotateZ(15deg) scale(1.08);
 }
 
 .folder.open .paper:nth-child(3) {
-  transform: translate(-50%, -100%) rotateZ(5deg);
+  transform: translate3d(-50%, -100%, 0) rotateZ(5deg);
   height: 80%;
 }
 
 .folder.open .paper:nth-child(3):hover {
-  transform: translate(-50%, -100%) rotateZ(5deg) scale(1.1);
+  transform: translate3d(-50%, -100%, 0) rotateZ(5deg) scale(1.08);
 }
 
 .folder.open .folder__front {
@@ -72,6 +85,8 @@
   height: 80px;
   background: var(--folder-back-color);
   border-radius: 0px 10px 10px 10px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .folder__back::after {
@@ -91,12 +106,15 @@
   z-index: 2;
   bottom: 10%;
   left: 50%;
-  transform: translate(-50%, 10%);
+  transform: translate3d(-50%, 10%, 0);
   width: 70%;
   height: 80%;
   background: var(--paper-1);
   border-radius: 10px;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .paper:nth-child(2) {
@@ -119,7 +137,10 @@
   background: var(--folder-color);
   border-radius: 5px 10px 10px 10px;
   transform-origin: bottom;
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .folder:focus-visible {

@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/layout/Navbar";
@@ -39,16 +39,16 @@ export default function Index() {
   // Section entrance animations — card-lift stagger for all sections
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>("main > section:not(:first-child)").forEach((section, i) => {
-        // Alternate slide directions for visual variety
-        const fromX = i % 3 === 0 ? 0 : i % 3 === 1 ? -30 : 30;
+      gsap.utils.toArray<HTMLElement>("main > section:not(:first-child)").forEach((section) => {
         gsap.fromTo(
           section,
-          { opacity: 0, y: 60, x: fromX, scale: 0.98 },
+          { opacity: 0, y: 45 },
           {
-            opacity: 1, y: 0, x: 0, scale: 1,
-            duration: 1.0,
-            ease: "power3.out",
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            clearProps: "transform",
             scrollTrigger: {
               trigger: section,
               start: "top 88%",
@@ -65,7 +65,7 @@ export default function Index() {
           { scaleX: 0, opacity: 0 },
           {
             scaleX: 1, opacity: 1,
-            duration: 1.4,
+            duration: 1.2,
             ease: "power2.out",
             transformOrigin: "left center",
             scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
@@ -92,14 +92,16 @@ export default function Index() {
       gsap.utils.toArray<HTMLElement>(".glass-panel, .glass-panel-bright").forEach((el) => {
         gsap.fromTo(
           el,
-          { opacity: 0, y: 24, scale: 0.97 },
+          { opacity: 0, y: 20 },
           {
-            opacity: 1, y: 0, scale: 1,
-            duration: 0.7,
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
             ease: "power2.out",
+            clearProps: "transform",
             scrollTrigger: {
               trigger: el,
-              start: "top 90%",
+              start: "top 92%",
               toggleActions: "play none none none",
             },
           }

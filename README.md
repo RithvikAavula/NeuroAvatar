@@ -19,6 +19,7 @@
   <a href="#-design-system">Design System</a> •
   <a href="#-animations">Animations</a> •
   <a href="#-tech-stack">Tech Stack</a> •
+  <a href="#-challenges--solutions">Challenges</a> •
   <a href="#-deployment">Deployment</a>
 </p>
 
@@ -40,11 +41,15 @@ NeuroAvatar is a **research-grade interactive web platform** that showcases the 
 
 ## 🚀 Live Demo
 
-Deploy to Vercel in one click or run locally:
+🌐 **Live Site**: [https://neuro-avatar.vercel.app](https://neuro-avatar.vercel.app)
+
+📦 **Repository**: [https://github.com/RithvikAavula/NeuroAvatar](https://github.com/RithvikAavula/NeuroAvatar)
+
+Or run locally:
 
 ```bash
 # Clone & install
-git clone https://github.com/your-org/NeuroAvatar.git
+git clone https://github.com/RithvikAavula/NeuroAvatar.git
 cd NeuroAvatar
 npm install
 
@@ -320,6 +325,121 @@ npm run preview
 - **Font optimization**: Preconnect to Google Fonts, display=swap
 - **Asset optimization**: Vite's tree-shaking, code splitting, hashed filenames
 - **Favicon**: Custom logo as favicon and Apple touch icon
+
+---
+
+## 🧩 Challenges & Solutions
+
+Building a visually rich, animation-heavy research platform across 14 sections presented several engineering challenges. Below is a summary of the key problems encountered and how they were solved.
+
+### 1. Roadmap Section Folder Animation Fluctuating & Jitter
+
+**Challenge**: After deployment, the interactive 3D folder component in the Roadmap section occasionally fluctuated or stuttered during scroll and interaction:
+- **Dual State Divergence**: Both the parent `RoadmapSection` and the child `Folder` component maintained independent `open` states. When clicked, uncoordinated event bubbling caused double toggling and out-of-sync states where open papers hovered while the floating CSS animation was still running.
+- **Hover Boundary Flutter**: As the folder floated up and down via keyframes, hovering near the element edge triggered CSS `translateY(-8px)`, causing the cursor to move outside the hit box and creating a high-frequency hover enter/leave oscillation loop.
+- **High-Frequency Mousemove Re-renders**: An unthrottled `mousemove` listener on papers was updating React state 60–120 times per second for unused CSS variables, thrashing the virtual DOM and stalling CSS transitions.
+- **Scroll Trigger Drift**: Opening the 10-phase grid dynamically expanded section height by ~800px without recalibrating GSAP's scroll cache, causing subsequent section triggers down the page to jump or fire prematurely.
+
+**Solution**:
+- **Controlled Single Source of Truth**: Refactored `Folder.tsx` to accept a controlled `open` prop and `onToggle` callback with `e.stopPropagation()`, completely preventing race conditions and double toggles.
+- **Hover Buffer Pseudo-Element**: Added an invisible hit-expansion buffer (`.folder::before` with negative inset) so the cursor never slips out of the hover zone during floating motion.
+- **Eliminated Unused State Updates**: Removed the heavy mousemove re-render cycle, letting the GPU handle paper transitions purely via hardware-accelerated CSS transforms.
+- **Hardware Acceleration (translate3d)**: Upgraded all keyframe and transition transforms from 2D (`translateY`) to 3D (`translate3d(0, -9px, 0)`), adding `will-change: transform` and `backface-visibility: hidden` for dedicated GPU compositor layer allocation.
+- **Dynamic ScrollTrigger Recalibration**: Attached `ScrollTrigger.refresh()` callbacks on card stagger completion and folder state change, ensuring buttery-smooth scroll offsets across the entire page.
+
+---
+
+### 2. Scroll Animation Smoothness & Compositor Layer Optimization
+
+**Challenge**: Scrolling through 14 animated sections created persistent GPU memory overhead and micro-stutters when multiple full-width sections retained inline GSAP CSS transforms after completing their entrance animations. Furthermore, lingering container transforms interfered with child hover animations and fixed overlay modals.
+
+**Solution**:
+- **GSAP `clearProps: "transform"`**: Applied automatic `clearProps: "transform"` upon completion of section and card entrance animations. Once in view, elements revert to standard layout flow without lingering composite layers or subpixel rasterization artifacts.
+- **Passive Scroll Listeners**: Implemented passive event listeners for the top scroll progress bar (`{ passive: true }`) to ensure the browser's main thread is never blocked during scroll.
+- **Decoupled ScrollTrigger Instances**: Wrapped each section's triggers in `gsap.context()` with explicit `ctx.revert()` lifecycles, ensuring memory is cleaned up on unmount or page transitions.
+
+---
+
+### 2. Dual-Theme System Across 14 Sections
+
+**Challenge**: Maintaining visual consistency and readability when switching between a dark (Deep Space) and light (Crystal Ivory) theme across 14 sections with gradient text, glass panels, glows, and animated elements. Inline styles with HSL values wouldn't automatically adapt.
+
+**Solution**:
+- Built a CSS custom property system (`--neural-cyan`, `--surface-1..4`, `--foreground`, etc.) that swaps values via a root class (`dark-theme` / `light-theme`)
+- Created theme-specific overrides in `index.css` for glass panels, gradient text, shimmer effects, and glow intensities
+- All components read `isDark` from `useTheme()` and adjust inline styles (box-shadows, border colors, background opacities) dynamically
+- Added `transition: background-color 0.5s ease, color 0.5s ease` on `html, body` for smooth theme crossfade
+
+---
+
+### 3. GSAP ScrollTrigger + Framer Motion Coexistence
+
+**Challenge**: Using both GSAP ScrollTrigger (for scroll-based section reveals, divider line draws, and glass panel staggers) and Framer Motion (for component-level micro-interactions) simultaneously caused conflicts — Framer would reset GSAP-applied transforms and vice versa.
+
+**Solution**:
+- Established clear ownership boundaries: GSAP owns scroll-triggered entrance animations via the `Index.tsx` orchestrator, while Framer Motion handles component-level interactions (hover states, presence transitions)
+- Used `gsap.context()` with cleanup (`ctx.revert()`) in every `useEffect` to prevent stale ScrollTrigger instances on re-renders
+- Scoped GSAP animations to `main > section:not(:first-child)` to avoid touching the Hero (which uses its own dedicated GSAP timeline)
+
+---
+
+### 4. Hero Section Performance with 50+ Animated Particles
+
+**Challenge**: The Hero section renders 50 floating particles, 5 aurora orbs, a background grid, mouse-parallax, typewriter animation, and GSAP headline choreography simultaneously. On lower-end devices, this caused frame drops below 30fps.
+
+**Solution**:
+- All particles use pure CSS `@keyframes` with randomized delays/durations (no JavaScript animation loop)
+- Aurora orbs use `filter: blur()` with `will-change: transform, opacity` for GPU compositing
+- Mouse parallax uses `requestAnimationFrame`-throttled updates with proportional depth multipliers
+- Mobile breakpoints reduce particle opacity and disable magnetic button effects via `@media (hover: none)`
+
+---
+
+### 5. Light Theme Text Readability
+
+**Challenge**: Many sections used gradient text fills (`-webkit-text-fill-color: transparent` + `background-clip: text`) designed for dark backgrounds. On the light theme, these gradients became washed out and unreadable.
+
+**Solution**:
+- Created dedicated light-theme gradient palettes (`#0284c7 → #6d28d9 → #4338ca` instead of `#00d4ff → #b872ff`)
+- Applied `!important` overrides via `html.light-theme .gradient-text-dynamic` selectors
+- Added a blanket override forcing all headings to `color: hsl(215 45% 4%) !important` in light mode
+- Adjusted glass panel backgrounds from dark translucent to bright ivory translucent
+
+---
+
+### 6. Roadmap Detail Modal Centering
+
+**Challenge**: The roadmap phase detail modal wasn't centering correctly because it was positioned inside a deeply nested scrollable section with `overflow: hidden` ancestors.
+
+**Solution**:
+- Used React `createPortal()` to render the modal directly into `document.body`, bypassing all parent overflow/transform contexts
+- Applied `position: fixed; inset: 0; display: flex; align-items: center; justify-content: center` on the overlay
+- Added GSAP entrance animation (`scale: 0.88 → 1`, `opacity: 0 → 1`) for polished open/close transitions
+
+---
+
+### 7. Mobile Responsiveness at Scale
+
+**Challenge**: 14 content-heavy sections with fixed pixel widths, large font sizes, and side-by-side layouts didn't adapt to mobile viewports. The folder-cards side-by-side layout in the Roadmap section broke completely on phones.
+
+**Solution**:
+- Added responsive media queries at 3 breakpoints (`≤480px`, `481–768px`, `769–1024px`) with `clamp()` typography
+- Used `flex-direction: column` overrides for stacking on small screens
+- Added `@media (hover: none) and (pointer: coarse)` for touch device optimizations (44px min tap targets, disabled magnetic hover)
+- Implemented `@media (prefers-reduced-motion: reduce)` for accessibility compliance
+- Added `@supports (padding: env(safe-area-inset-bottom))` for notched device safe areas
+
+---
+
+### 8. Production Bundle Size Optimization
+
+**Challenge**: The production bundle exceeded 1.6MB (471KB gzipped) due to Three.js, GSAP, Framer Motion, and Recharts all being bundled together.
+
+**Solution**:
+- Vite's automatic tree-shaking eliminates unused module exports
+- Hashed filenames (`index-Ck4p1Qfh.js`) enable immutable caching with `Cache-Control: max-age=31536000`
+- `vercel.json` configured with framework-aware build settings and security headers
+- Future improvement: Dynamic `import()` for below-fold sections (Three.js scenes, charts) to reduce initial payload
 
 ---
 

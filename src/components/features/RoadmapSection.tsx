@@ -52,11 +52,19 @@ export default function RoadmapSection() {
 
   /* stagger cards in */
   useEffect(() => {
-    if (!open || !gridRef.current) return;
+    if (!open || !gridRef.current) {
+      ScrollTrigger.refresh();
+      return;
+    }
     const cards = gridRef.current.querySelectorAll<HTMLElement>(".rm-card");
     gsap.fromTo(cards,
-      { opacity: 0, y: 40, scale: 0.88 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.55, ease: "back.out(1.4)", stagger: 0.055, delay: 0.05 }
+      { opacity: 0, y: 30, scale: 0.94 },
+      {
+        opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "power2.out", stagger: 0.04, delay: 0.05,
+        onComplete: () => {
+          ScrollTrigger.refresh();
+        }
+      }
     );
   }, [open]);
 
@@ -86,7 +94,7 @@ export default function RoadmapSection() {
       <div className="section-divider absolute top-0 left-0 right-0" />
 
       <style>{`
-        @keyframes rm-float   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+        @keyframes rm-float   { 0%,100%{transform:translate3d(0,0,0)} 50%{transform:translate3d(0,-9px,0)} }
         @keyframes rm-shimmer { 0%{left:-70%} 100%{left:140%} }
         @keyframes rm-glow    { 0%,100%{opacity:.7;transform:scale(1)} 50%{opacity:.4;transform:scale(1.25)} }
         @keyframes rm-spin-slow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
@@ -95,6 +103,8 @@ export default function RoadmapSection() {
           cursor: pointer;
           transition: transform 0.3s cubic-bezier(.22,1,.36,1), box-shadow 0.3s ease, border-color 0.3s ease;
           will-change: transform;
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
         }
         .rm-card:hover {
           transform: translateY(-8px) scale(1.04) !important;
@@ -139,15 +149,22 @@ export default function RoadmapSection() {
           {/* LEFT — folder column */}
           <div style={{ flexShrink:0, display:"flex", flexDirection:"column", alignItems:"center", gap:16 }}>
             {/* decorative rings + folder */}
-            <div style={{ position:"relative", width:320, height:320, display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <div style={{ position:"absolute", inset:0, borderRadius:"50%", border:"1px solid rgba(0,207,255,0.15)", animation: open ? "none" : "rm-spin-slow 12s linear infinite" }} />
-              <div style={{ position:"absolute", inset:20, borderRadius:"50%", border:"1px dashed rgba(0,255,170,0.12)", animation: open ? "none" : "rm-spin-slow 8s linear infinite reverse" }} />
-              <div style={{ position:"absolute", inset:40, borderRadius:"50%", border:"1px solid rgba(192,132,252,0.08)", animation: open ? "none" : "rm-spin-slow 16s linear infinite" }} />
+            <div style={{ position:"relative", width:320, height:320, display:"flex", alignItems:"center", justifyContent:"center", contain:"layout style" }}>
+              <div style={{ position:"absolute", inset:0, borderRadius:"50%", border:"1px solid rgba(0,207,255,0.15)", animation: open ? "none" : "rm-spin-slow 12s linear infinite", willChange:"transform", backfaceVisibility:"hidden" }} />
+              <div style={{ position:"absolute", inset:20, borderRadius:"50%", border:"1px dashed rgba(0,255,170,0.12)", animation: open ? "none" : "rm-spin-slow 8s linear infinite reverse", willChange:"transform", backfaceVisibility:"hidden" }} />
+              <div style={{ position:"absolute", inset:40, borderRadius:"50%", border:"1px solid rgba(192,132,252,0.08)", animation: open ? "none" : "rm-spin-slow 16s linear infinite", willChange:"transform", backfaceVisibility:"hidden" }} />
               <div
-                onClick={() => setOpen(o => !o)}
-                style={{ animation: open ? "none" : "rm-float 3.5s ease-in-out infinite", cursor:"pointer", marginTop:14 }}
+                style={{
+                  animation: open ? "none" : "rm-float 3.5s ease-in-out infinite",
+                  marginTop: 14,
+                  willChange: "transform",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden"
+                }}
               >
                 <Folder
+                  open={open}
+                  onToggle={setOpen}
                   color="#00cfff"
                   size={3}
                   items={[
@@ -160,9 +177,14 @@ export default function RoadmapSection() {
                 />
               </div>
             </div>
-            <div style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, letterSpacing:"0.24em", color:"rgba(0,207,255,0.55)", textAlign:"center" }}>
+            <button
+              type="button"
+              onClick={() => setOpen(o => !o)}
+              className="rm-open-btn cursor-pointer py-1.5 px-4 rounded-full border border-neural-cyan/30 hover:border-neural-cyan/70 hover:bg-neural-cyan/10 transition-all text-center"
+              style={{ fontFamily:"'IBM Plex Mono',monospace", fontSize:10, letterSpacing:"0.24em", color: isDark ? "rgba(0,207,255,0.85)" : "#0284c7" }}
+            >
               {open ? "CLICK TO CLOSE" : "CLICK TO OPEN"}
-            </div>
+            </button>
           </div>
 
           {/* RIGHT — cards grid */}
