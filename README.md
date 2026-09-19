@@ -16,6 +16,7 @@
   <a href="#-live-demo">Live Demo</a> •
   <a href="#-architecture">Architecture</a> •
   <a href="#-sections--features">Sections</a> •
+  <a href="#-3d-meshy-ai-models">3D Models</a> •
   <a href="#-design-system">Design System</a> •
   <a href="#-animations">Animations</a> •
   <a href="#-tech-stack">Tech Stack</a> •
@@ -30,6 +31,7 @@
 NeuroAvatar is a **research-grade interactive web platform** that showcases the future of human-robot teleoperation through brain-computer interfaces (BCI). The application presents a comprehensive investor and research information portal featuring:
 
 - **14 immersive content sections** with scroll-triggered animations
+- **Meshy AI 3D Humanoid & Avatar Pipeline** — Generative 3D cybernetic operator and robot models with real-time skeletal animations (running, boxing, dancing, gestures)
 - **Dual-theme system** (Deep Space Dark / Crystal Ivory Light) with seamless live switching
 - **Real-time interactive elements** — parallax, magnetic buttons, GSAP choreography
 - **Simulated BCI telemetry pipeline** visualization
@@ -107,12 +109,12 @@ NeuroAvatar/
 |---|---------|-------------|------------------|
 | 1 | **Hero** | Kinetic headline with typewriter subtitle | Mouse parallax, magnetic CTAs, continuous glow/shimmer animations, floating particles |
 | 2 | **Problem** | Why current robotics interfaces fail | 4 animated bottleneck cards, comparison matrix |
-| 3 | **Big Idea** | The NeuroAvatar paradigm shift | Scroll-triggered reveals, gradient text |
+| 3 | **Big Idea** | The NeuroAvatar paradigm shift | Side-by-side 3D Meshy operator & robot avatars, scroll-triggered reveals |
 | 4 | **Not An AI** | Motor intention vs. AI command distinction | Flip cards with front/back comparison, VS divider |
 | 5 | **How It Works** | 5-stage BCI pipeline walkthrough | Step-by-step reveal, signal flow animation |
-| 6 | **Demo** | Simulated BCI telemetry pipeline | Mesh character visualization, one-way signal transmission |
-| 7 | **Neural Decoder** | EEG → kinematics signal processing | Raw EEG image, technical processing cards |
-| 8 | **Two-Way** | Bidirectional feedback loop | Animated transmission pathways |
+| 6 | **Demo** | Interactive BCI humanoid action simulator | 4 real-time Meshy AI skeletal animation modes (Running, Boxing, Dance, Gesture), telemetry metrics |
+| 7 | **Neural Decoder** | EEG → kinematics signal processing | Raw EEG spectrum, technical processing cards |
+| 8 | **Two-Way** | Bidirectional feedback loop | Dual Meshy 3D viewports (Neural Vanguard & Cybernetic Sentinel), animated transmission pathways |
 | 9 | **Roadmap** | Development milestones timeline | Interactive modal detail views |
 | 10 | **Applications** | Use cases across verticals | Expandable application cards |
 | 11 | **Research** | Academic foundation & citations | Publication cards with links |
@@ -223,6 +225,30 @@ aurora-orb-drift, glow-pulse, dot-flow, node-pulse, red-decay
 
 ---
 
+## 🤖 3D Meshy AI Models & Interactive WebGL Pipeline
+
+NeuroAvatar features an end-to-end 3D character pipeline powered by **Meshy AI** (generative 3D mesh modeling and texturing) integrated with **Three.js**, **React Three Fiber (`@react-three/fiber`)**, and **`@react-three/drei`**.
+
+### Model Roster & GLB Assets
+
+| Asset File | Character / Role | BCI Integration & Behavior |
+|------------|------------------|----------------------------|
+| `Meshy_AI_Neural_Vanguard_0918185718_texture.glb` | **Neural Vanguard (Operator)** | Human cybernetic operator avatar situated at the neural recording station. Features detailed cyberware textures, neural headset apparatus, and ambient signal aura. |
+| `Meshy_AI_Cybernetic_Sentinel_0918184736_texture.glb` | **Cybernetic Sentinel (Avatar)** | Full-scale humanoid teleoperation robot avatar designed for remote embodiment. Used as the default physical counterpart in the two-way teleoperation loop. |
+| `Meshy_AI_Cybernetic_Sentinel_Running.glb` | **Locomotion Kinematics** | Continuous bipedal running animation triggered when the simulated BCI pipeline classifies active forward locomotion motor-imagery intent. |
+| `Meshy_AI_Cybernetic_Sentinel_Boxing_Practice.glb` | **Upper-Body Manipulation** | High-dexterity boxing and arm-strike kinematic stream, demonstrating low-latency upper-limb coordination and defensive posturing. |
+| `Meshy_AI_Cybernetic_Sentinel_All_Night_Dance.glb` | **Whole-Body Agility** | Fluid, synchronized whole-body dance movements illustrating complex multi-joint degrees of freedom (DoF) and dynamic balance. |
+| `Meshy_AI_Cybernetic_Sentinel_Agree_Gesture.glb` | **Social Telepresence** | Fine-motor expressive nod/affirmation gesture, demonstrating conversational presence and social interaction feedback channels. |
+
+### WebGL Architecture & Shading Highlights
+- **Dynamic Action Switching**: The `DemoSection` allows users to select between simulated motor imagery states (Running, Boxing, Dancing, Gestures), dynamically swapping and blending skeletal animation tracks via `@react-three/drei`'s `useAnimations`.
+- **Preloading Strategy**: Assets are preloaded at module initialization with `useGLTF.preload(...)` to eliminate network stalls and ensure instantaneous animation playback.
+- **Atmospheric Lighting**: Three-point studio lighting with high-intensity cyan/violet rim lights, directional key lighting, and subtle ground bounce illumination that adapts to both Dark and Light themes.
+- **Hardware-Constrained OrbitControls**: Damped rotation with constrained polar angles (`minPolarAngle: Math.PI / 4`, `maxPolarAngle: Math.PI / 2`) prevents camera clipping beneath ground planes while allowing full 360° orbital inspection.
+- **Theme-Aware Hologram & Normal Overlays**: Models feature custom cybernetic shaders that transition seamlessly between standard PBR materials, wireframe hologram projections, and neural particle auras.
+
+---
+
 ## 🛠 Tech Stack
 
 ### Core Framework
@@ -249,10 +275,11 @@ aurora-orb-drift, glow-pulse, dot-flow, node-pulse, red-decay
 ### 3D & Visualization
 | Technology | Purpose |
 |------------|---------|
-| **Three.js** 0.181 | 3D scene rendering |
-| **React Three Fiber** 8.18 | React bindings for Three.js |
-| **React Three Drei** 9.122 | Helper components for R3F |
-| **Chart.js** / **Recharts** | Data visualizations |
+| **Meshy AI** | Generative 3D mesh modeling, topology & texturing for humanoid avatars |
+| **Three.js** 0.181 | 3D scene rendering engine |
+| **React Three Fiber** 8.18 | Declarative React bindings for Three.js |
+| **React Three Drei** 9.122 | High-performance shaders, loaders (`useGLTF`), controls (`OrbitControls`) |
+| **Chart.js** / **Recharts** | Telemetry and market data visualizations |
 
 ### State & Data
 | Technology | Purpose |
@@ -440,6 +467,21 @@ Building a visually rich, animation-heavy research platform across 14 sections p
 - Hashed filenames (`index-Ck4p1Qfh.js`) enable immutable caching with `Cache-Control: max-age=31536000`
 - `vercel.json` configured with framework-aware build settings and security headers
 - Future improvement: Dynamic `import()` for below-fold sections (Three.js scenes, charts) to reduce initial payload
+
+---
+
+### 9. Meshy 3D Model Memory Management & Skeletal Animation Switching
+
+**Challenge**: Rendering multiple high-fidelity 3D humanoid GLB models (generated via Meshy AI) with distinct skeletal bone animations across multiple viewports (Demo section, Two-Way section, Big Idea section) created performance risks:
+- WebGL memory leaks and context loss when navigating or re-mounting components
+- Frame drops and visual hitching when swapping between heavy animation files (Running, Boxing, Dance, Gesture) during runtime
+- High fragment shader and draw-call overhead on mobile GPUs with retina-resolution screens
+
+**Solution**:
+- **Module-Level Preloading**: Implemented `useGLTF.preload(...)` for all 6 Meshy model assets (`Neural_Vanguard`, `Cybernetic_Sentinel`, and kinematic variants) so geometry and textures are parsed once and cached in the GPU buffer.
+- **Suspense Boundaries & Fallback Shaders**: Wrapped all Canvas scenes in React `Suspense` with lightweight glowing holographic skeleton loaders, ensuring the main thread remains responsive during asynchronous GLTF parsing.
+- **Three.js AnimationMixer Cross-Fading**: Applied smooth blend weights across skeletal tracks rather than abruptly destroying and rebuilding scenes, yielding seamless kinematic transitions when users switch BCI intention states.
+- **Dynamic DPR Capping**: Set `dpr={[1, 2]}` on R3F `<Canvas>` elements to prevent retina devices (such as iPhone and 4K displays) from rendering at 3x/4x pixel density, preserving a constant 60fps framerate.
 
 ---
 
