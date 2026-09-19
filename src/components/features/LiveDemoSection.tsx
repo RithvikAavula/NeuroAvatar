@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useInView } from "@/hooks/useInView";
 
 type CommandKey = 'LEFT HAND' | 'RIGHT HAND' | 'FORWARD' | 'TURN LEFT' | 'TURN RIGHT' | 'ARM RAISE' | 'ARM LOWER' | 'HAND OPEN' | 'HAND CLOSE' | 'STOP';
@@ -41,14 +41,14 @@ export default function LiveDemoSection() {
   const activeCmd = commands.find(c => c.label === active);
 
   return (
-    <section id="demo" ref={ref} className="relative py-32 overflow-hidden" style={{ background: 'hsl(220 27% 4%)' }}>
+    <section id="demo" ref={ref} className="relative py-32 overflow-hidden bg-background">
       <div className="section-divider absolute top-0 left-0 right-0" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6">
         <div className={`text-center mb-16 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <div className="tech-label mb-4 opacity-50">INTERACTIVE DEMO</div>
           <h2
-            className="font-bold text-white mb-4"
+            className="font-bold gradient-text-white mb-4"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}
           >
             SIMULATED <span className="gradient-text-cyan">CONTROL INTERFACE</span>
@@ -66,7 +66,7 @@ export default function LiveDemoSection() {
             <DemoHumanFigure activePart={activeCmd?.humanPart ?? null} />
             <div className="mt-4 text-center">
               <div className="tech-label opacity-40 mb-1">MOTOR INTENTION</div>
-              <div className={`text-sm font-bold transition-all duration-300 ${active ? 'text-[hsl(var(--neural-cyan))]' : 'text-white/30'}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <div className={`text-sm font-bold transition-all duration-300 ${active ? 'text-[hsl(var(--neural-cyan))]' : 'text-foreground/30'}`} style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {active ? `${active} DETECTED` : 'STANDBY'}
               </div>
             </div>
@@ -83,12 +83,12 @@ export default function LiveDemoSection() {
                   <div className={`w-full px-4 py-3 rounded-lg text-center text-xs font-bold tracking-wider transition-all duration-300 border ${
                     active
                       ? 'border-[hsl(var(--neural-cyan))/40] bg-[hsl(var(--neural-cyan))/8] text-[hsl(var(--neural-cyan))]'
-                      : 'border-white/5 text-white/20'
-                  }`} style={{ fontFamily: "'Space Grotesk', sans-serif", transitionDelay: `${i * 60}ms` }}>
+                      : 'border-foreground/5 text-foreground/20'
+                  }`} style={{ fontFamily: "'Outfit', sans-serif", transitionDelay: `${i * 60}ms` }}>
                     {stage}
                   </div>
                   {i < 4 && (
-                    <div className="w-px h-4 relative overflow-hidden bg-white/5">
+                    <div className="w-px h-4 relative overflow-hidden bg-foreground/5">
                       {active && (
                         <div
                           className="absolute w-full h-3 bg-[hsl(var(--neural-cyan))]"
@@ -104,10 +104,10 @@ export default function LiveDemoSection() {
             {/* Signal log */}
             <div className="mt-4 glass-panel rounded-lg p-3 font-mono text-xs opacity-50 h-24 overflow-hidden" data-technical="true">
               {signalHistory.length === 0 ? (
-                <span className="text-white/30">{'>'} awaiting input<span className="blink">_</span></span>
+                <span className="text-foreground/30">{'>'} awaiting input<span className="blink">_</span></span>
               ) : (
                 signalHistory.map((line, i) => (
-                  <div key={i} className={`${i === 0 ? 'text-[hsl(var(--neural-cyan))]' : 'text-white/30'}`}>{line}</div>
+                  <div key={i} className={`${i === 0 ? 'text-[hsl(var(--neural-cyan))]' : 'text-foreground/30'}`}>{line}</div>
                 ))
               )}
             </div>
@@ -119,7 +119,7 @@ export default function LiveDemoSection() {
             <DemoRobotFigure activePart={activeCmd?.humanPart ?? null} />
             <div className="mt-4 text-center">
               <div className="tech-label opacity-40 mb-1">ROBOT ACTION</div>
-              <div className={`text-sm font-bold transition-all duration-300 ${active ? 'text-[hsl(var(--neural-violet))]' : 'text-white/30'}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              <div className={`text-sm font-bold transition-all duration-300 ${active ? 'text-[hsl(var(--neural-violet))]' : 'text-foreground/30'}`} style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {activeCmd?.robotAction ?? 'IDLE'}
               </div>
             </div>
@@ -141,9 +141,9 @@ export default function LiveDemoSection() {
                       : 'border-[hsl(var(--neural-cyan))] bg-[hsl(var(--neural-cyan))/12] text-[hsl(var(--neural-cyan))]'
                     : cmd.label === 'STOP'
                     ? 'border-red-500/30 text-red-400/60 hover:border-red-500/60'
-                    : 'glass-panel border-white/10 text-white/60 hover:border-white/25 hover:text-white/80'
+                    : 'glass-panel border-foreground/10 text-foreground/60 hover:border-foreground/25 hover:text-foreground/80'
                 }`}
-                style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+                style={{ fontFamily: "'Outfit', sans-serif" }}
                 data-interactive="true"
               >
                 {cmd.label}
@@ -161,12 +161,12 @@ function DemoHumanFigure({ activePart }: { activePart: string | null }) {
   const glow = 'hsl(191 100% 50%)';
   return (
     <svg viewBox="0 0 80 120" className="w-24 h-36">
-      <circle cx="40" cy="12" r="10" fill="hsl(220 25% 12%)" stroke={active('head') ? glow : 'hsl(210 20% 30%)'} strokeWidth="1.5" />
-      <rect x="28" y="26" width="24" height="30" rx="4" fill="hsl(220 25% 12%)" stroke={active('torso') ? glow : 'hsl(210 20% 30%)'} strokeWidth="1.5" />
-      <line x1="28" y1="30" x2="12" y2="55" stroke={activePart === 'left-arm' || activePart === 'right-hand' ? glow : 'hsl(210 20% 30%)'} strokeWidth={activePart === 'left-arm' ? "3" : "1.5"} strokeLinecap="round" style={{ transition: 'all 0.3s ease', filter: activePart === 'left-arm' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
-      <line x1="52" y1="30" x2="68" y2="55" stroke={activePart === 'right-arm' || activePart === 'right-hand' ? glow : 'hsl(210 20% 30%)'} strokeWidth={activePart === 'right-arm' || activePart === 'right-hand' ? "3" : "1.5"} strokeLinecap="round" style={{ transition: 'all 0.3s ease', filter: activePart === 'right-arm' || activePart === 'right-hand' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
-      <line x1="35" y1="56" x2="28" y2="90" stroke={activePart === 'legs' ? glow : 'hsl(210 20% 30%)'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="round" style={{ filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
-      <line x1="45" y1="56" x2="52" y2="90" stroke={activePart === 'legs' ? glow : 'hsl(210 20% 30%)'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="round" style={{ filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <circle cx="40" cy="12" r="10" fill="transparent" stroke={active('head') ? glow : 'hsl(var(--border))'} strokeWidth="1.5" />
+      <rect x="28" y="26" width="24" height="30" rx="4" fill="transparent" stroke={active('torso') ? glow : 'hsl(var(--border))'} strokeWidth="1.5" />
+      <line x1="28" y1="30" x2="12" y2="55" stroke={activePart === 'left-arm' || activePart === 'right-hand' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'left-arm' ? "3" : "1.5"} strokeLinecap="round" style={{ transition: 'all 0.3s ease', filter: activePart === 'left-arm' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <line x1="52" y1="30" x2="68" y2="55" stroke={activePart === 'right-arm' || activePart === 'right-hand' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'right-arm' || activePart === 'right-hand' ? "3" : "1.5"} strokeLinecap="round" style={{ transition: 'all 0.3s ease', filter: activePart === 'right-arm' || activePart === 'right-hand' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <line x1="35" y1="56" x2="28" y2="90" stroke={activePart === 'legs' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="round" style={{ filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <line x1="45" y1="56" x2="52" y2="90" stroke={activePart === 'legs' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="round" style={{ filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
     </svg>
   );
 }
@@ -175,15 +175,15 @@ function DemoRobotFigure({ activePart }: { activePart: string | null }) {
   const glow = 'hsl(262 80% 60%)';
   return (
     <svg viewBox="0 0 80 120" className="w-24 h-36">
-      <rect x="30" y="4" width="20" height="16" rx="2" fill="hsl(220 25% 10%)" stroke={activePart === 'head' ? glow : 'hsl(210 20% 25%)'} strokeWidth="1.5" />
-      <circle cx="36" cy="12" r="2" fill={activePart === 'head' ? glow : 'hsl(210 20% 40%)'} />
-      <circle cx="44" cy="12" r="2" fill={activePart === 'head' ? glow : 'hsl(210 20% 40%)'} />
-      <rect x="26" y="24" width="28" height="28" rx="2" fill="hsl(220 25% 10%)" stroke={activePart === 'torso' ? glow : 'hsl(210 20% 25%)'} strokeWidth="1.5" />
-      <rect x="32" y="30" width="16" height="10" rx="1" fill={activePart === 'torso' ? 'hsl(262 80% 60% / 0.1)' : 'hsl(220 25% 8%)'} stroke={activePart === 'torso' ? glow : 'hsl(210 20% 20%)'} strokeWidth="0.5" />
-      <line x1="26" y1="29" x2="10" y2="54" stroke={activePart === 'left-arm' ? glow : 'hsl(210 20% 25%)'} strokeWidth={activePart === 'left-arm' ? "3" : "1.5"} strokeLinecap="square" style={{ filter: activePart === 'left-arm' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
-      <line x1="54" y1="29" x2="70" y2={activePart === 'right-arm' || activePart === 'right-hand' ? "40" : "54"} stroke={activePart === 'right-arm' || activePart === 'right-hand' ? glow : 'hsl(210 20% 25%)'} strokeWidth={activePart === 'right-arm' || activePart === 'right-hand' ? "3" : "1.5"} strokeLinecap="square" style={{ transition: 'all 0.4s ease', filter: activePart === 'right-arm' || activePart === 'right-hand' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
-      <line x1="34" y1="52" x2="28" y2={activePart === 'legs' ? "80" : "90"} stroke={activePart === 'legs' ? glow : 'hsl(210 20% 25%)'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="square" style={{ transition: 'all 0.4s ease', filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
-      <line x1="46" y1="52" x2="52" y2={activePart === 'legs' ? "80" : "90"} stroke={activePart === 'legs' ? glow : 'hsl(210 20% 25%)'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="square" style={{ transition: 'all 0.4s ease', filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <rect x="30" y="4" width="20" height="16" rx="2" fill="transparent" stroke={activePart === 'head' ? glow : 'hsl(var(--border))'} strokeWidth="1.5" />
+      <circle cx="36" cy="12" r="2" fill={activePart === 'head' ? glow : 'hsl(var(--muted-foreground))'} />
+      <circle cx="44" cy="12" r="2" fill={activePart === 'head' ? glow : 'hsl(var(--muted-foreground))'} />
+      <rect x="26" y="24" width="28" height="28" rx="2" fill="transparent" stroke={activePart === 'torso' ? glow : 'hsl(var(--border))'} strokeWidth="1.5" />
+      <rect x="32" y="30" width="16" height="10" rx="1" fill={activePart === 'torso' ? 'hsl(262 80% 60% / 0.1)' : 'transparent'} stroke={activePart === 'torso' ? glow : 'hsl(var(--border))'} strokeWidth="0.5" />
+      <line x1="26" y1="29" x2="10" y2="54" stroke={activePart === 'left-arm' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'left-arm' ? "3" : "1.5"} strokeLinecap="square" style={{ filter: activePart === 'left-arm' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <line x1="54" y1="29" x2="70" y2={activePart === 'right-arm' || activePart === 'right-hand' ? "40" : "54"} stroke={activePart === 'right-arm' || activePart === 'right-hand' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'right-arm' || activePart === 'right-hand' ? "3" : "1.5"} strokeLinecap="square" style={{ transition: 'all 0.4s ease', filter: activePart === 'right-arm' || activePart === 'right-hand' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <line x1="34" y1="52" x2="28" y2={activePart === 'legs' ? "80" : "90"} stroke={activePart === 'legs' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="square" style={{ transition: 'all 0.4s ease', filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
+      <line x1="46" y1="52" x2="52" y2={activePart === 'legs' ? "80" : "90"} stroke={activePart === 'legs' ? glow : 'hsl(var(--border))'} strokeWidth={activePart === 'legs' ? "3" : "1.5"} strokeLinecap="square" style={{ transition: 'all 0.4s ease', filter: activePart === 'legs' ? `drop-shadow(0 0 3px ${glow})` : 'none' }} />
     </svg>
   );
 }

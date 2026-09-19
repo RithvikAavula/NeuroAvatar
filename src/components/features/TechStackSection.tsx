@@ -1,4 +1,4 @@
-import { useInView } from "@/hooks/useInView";
+﻿import { useInView } from "@/hooks/useInView";
 
 const techCategories = [
   {
@@ -71,15 +71,15 @@ export default function TechStackSection() {
   const { ref, inView } = useInView(0.1);
 
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="relative py-32 overflow-hidden bg-background">
       <div className="section-divider absolute top-0 left-0 right-0" />
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 50% 60% at 50% 100%, hsl(191 40% 6%), hsl(220 27% 4%))' }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 50% 60% at 50% 100%, hsl(var(--muted) / 0.5), transparent)' }} />
 
       <div ref={ref} className="relative z-10 max-w-6xl mx-auto px-6">
         <div className={`text-center mb-16 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <div className="tech-label mb-4 opacity-50">ENGINEERING ARCHITECTURE</div>
           <h2
-            className="font-bold text-white"
+            className="font-bold gradient-text-white"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}
           >
             TECHNOLOGY <span className="gradient-text-cyan">STACK</span>
@@ -101,10 +101,10 @@ export default function TechStackSection() {
               <div className="flex flex-col gap-3">
                 {cat.items.map((item) => (
                   <div key={item.name} className="flex items-start gap-3 group">
-                    <div className={`mt-1.5 w-1 h-1 rounded-full flex-shrink-0 ${cat.color === 'cyan' ? 'bg-[hsl(var(--neural-cyan))/50]' : 'bg-[hsl(var(--neural-violet))/50]'}`} />
+                    <div className={`mt-1.5 w-1 h-1 rounded-full flex-shrink-0 ${cat.color === 'cyan' ? 'bg-[hsl(var(--neural-cyan))]' : 'bg-[hsl(var(--neural-violet))]'} opacity-60`} />
                     <div>
-                      <div className="text-sm font-semibold text-white/90" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>{item.name}</div>
-                      <div className="text-xs text-white/30 mt-0.5">{item.role}</div>
+                      <div className="text-sm font-semibold text-foreground" style={{ fontFamily: "'Outfit', sans-serif" }}>{item.name}</div>
+                      <div className="text-xs text-muted-foreground mt-0.5">{item.role}</div>
                     </div>
                   </div>
                 ))}

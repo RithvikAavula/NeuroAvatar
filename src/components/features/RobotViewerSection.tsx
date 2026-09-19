@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTheme } from "@/hooks/useTheme";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,6 +47,8 @@ export default function RobotViewerSection() {
   const frameRef    = useRef<number>();
   const [hoveredJoint, setHoveredJoint] = useState<JointInfo | null>(null);
   const [tooltipPos, setTooltipPos]     = useState({ x: 0, y: 0 });
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -64,7 +67,7 @@ export default function RobotViewerSection() {
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
+    renderer.toneMappingExposure = isDark ? 1.1 : 1.4;
     mount.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -76,22 +79,22 @@ export default function RobotViewerSection() {
     controls.maxPolarAngle = Math.PI * 0.85;
     controls.target.set(0, 0.8, 0);
 
-    // Lights — warm amber palette
-    scene.add(new THREE.AmbientLight(0x1a1208, 2.0));
-    const key = new THREE.DirectionalLight(0xd97706, 2.2);
+    // Lights — warm amber palette, adjusted for theme
+    scene.add(new THREE.AmbientLight(isDark ? 0x1a1208 : 0xf5ede0, isDark ? 2.0 : 3.5));
+    const key = new THREE.DirectionalLight(0xd97706, isDark ? 2.2 : 1.8);
     key.position.set(2, 4, 3);
     key.castShadow = true;
     scene.add(key);
-    const fill = new THREE.DirectionalLight(0xc2410c, 1.2);
+    const fill = new THREE.DirectionalLight(isDark ? 0xc2410c : 0xe8c090, isDark ? 1.2 : 1.5);
     fill.position.set(-3, 2, -2);
     scene.add(fill);
-    const rim = new THREE.DirectionalLight(0x78350f, 0.7);
+    const rim = new THREE.DirectionalLight(isDark ? 0x78350f : 0xd4a060, isDark ? 0.7 : 1.0);
     rim.position.set(0, -1, -4);
     scene.add(rim);
 
     // Grid floor
     const grid = new THREE.GridHelper(6, 24, 0xd97706, 0xd97706);
-    (grid.material as THREE.LineBasicMaterial).opacity = 0.1;
+    (grid.material as THREE.LineBasicMaterial).opacity = isDark ? 0.1 : 0.15;
     (grid.material as THREE.LineBasicMaterial).transparent = true;
     grid.position.y = -1.22;
     scene.add(grid);
@@ -99,14 +102,14 @@ export default function RobotViewerSection() {
     // Ground
     const ground = new THREE.Mesh(
       new THREE.PlaneGeometry(6, 6),
-      new THREE.MeshStandardMaterial({ color: 0x080604, roughness: 1, metalness: 0 })
+      new THREE.MeshStandardMaterial({ color: isDark ? 0x080604 : 0xe8dece, roughness: 1, metalness: 0 })
     );
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -1.22;
     ground.receiveShadow = true;
     scene.add(ground);
 
-    const robot = buildRobot(jointsRef.current);
+    const robot = buildRobot(jointsRef.current, isDark);
     scene.add(robot);
 
     const clock = new THREE.Clock();
@@ -165,7 +168,7 @@ export default function RobotViewerSection() {
       renderer.dispose();
       if (mount.contains(renderer.domElement)) mount.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [isDark]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -197,8 +200,7 @@ export default function RobotViewerSection() {
     <section
       id="robot-viewer"
       ref={sectionRef}
-      className="relative py-24 overflow-hidden"
-      style={{ background: "hsl(var(--surface-1))" }}
+      className="relative py-24 overflow-hidden bg-background"
     >
       <div className="section-divider absolute top-0 left-0 right-0" />
       <div
@@ -279,7 +281,7 @@ export default function RobotViewerSection() {
                     ].map(([k, v]) => (
                       <div key={k} className="flex items-center justify-between py-1">
                         <span className="tech-label opacity-40" style={{ fontSize: "9px" }}>{k}</span>
-                        <span className="text-xs font-bold text-foreground" style={{ fontFamily: "'Space Grotesk',monospace" }}>{v}</span>
+                        <span className="text-xs font-bold text-foreground" style={{ fontFamily: "'Syne',monospace" }}>{v}</span>
                       </div>
                     ))}
                     <div className={`mt-2 text-[9px] font-bold tracking-widest px-2 py-1 rounded border text-center ${statusBadgeCls(hoveredJoint.status)}`}>
@@ -319,7 +321,7 @@ export default function RobotViewerSection() {
                   <span className="tech-label opacity-40">{label}</span>
                   <span
                     className="text-xs font-bold"
-                    style={{ fontFamily: "'Space Grotesk',monospace", color: "hsl(var(--neural-cyan))" }}
+                    style={{ fontFamily: "'Syne',monospace", color: "hsl(var(--neural-cyan))" }}
                   >
                     {value}
                   </span>
@@ -336,7 +338,7 @@ export default function RobotViewerSection() {
                     style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}` }}
                   />
                   <span className="tech-label opacity-60">{status}</span>
-                  <span className="text-xs opacity-40 ml-auto" style={{ fontFamily: "'Space Grotesk',monospace" }}>
+                  <span className="text-xs opacity-40 ml-auto" style={{ fontFamily: "'Syne',monospace" }}>
                     {Object.values(JOINT_DATA).filter(j => j.status === status).length}
                   </span>
                 </div>
@@ -356,12 +358,12 @@ export default function RobotViewerSection() {
   );
 }
 
-function buildRobot(joints: Map<string, THREE.Mesh>): THREE.Group {
+function buildRobot(joints: Map<string, THREE.Mesh>, isDark = true): THREE.Group {
   const robot = new THREE.Group();
 
-  const bodyMat  = () => new THREE.MeshStandardMaterial({ color: 0x1a1208, emissive: 0x0d0800, roughness: 0.25, metalness: 0.85 });
-  const jointMat = () => new THREE.MeshStandardMaterial({ color: 0x2a1f10, emissive: 0x100800, roughness: 0.38, metalness: 0.72 });
-  const accentMat= () => new THREE.MeshStandardMaterial({ color: 0xd97706, emissive: 0xb45309, emissiveIntensity: 0.55, roughness: 0.18, metalness: 0.9 });
+  const bodyMat  = () => new THREE.MeshStandardMaterial({ color: isDark ? 0x1a1208 : 0x3a2e20, emissive: isDark ? 0x0d0800 : 0x1a1000, roughness: 0.25, metalness: 0.85 });
+  const jointMat = () => new THREE.MeshStandardMaterial({ color: isDark ? 0x2a1f10 : 0x4a3820, emissive: isDark ? 0x100800 : 0x201000, roughness: 0.38, metalness: 0.72 });
+  const accentMat= () => new THREE.MeshStandardMaterial({ color: 0xd97706, emissive: 0xb45309, emissiveIntensity: isDark ? 0.55 : 0.35, roughness: 0.18, metalness: 0.9 });
 
   const tag = (mesh: THREE.Mesh, key: string) => { mesh.userData.jointKey = key; return mesh; };
 
@@ -395,7 +397,7 @@ function buildRobot(joints: Map<string, THREE.Mesh>): THREE.Group {
   joints.set("torso", torsoBox);
   const panel = tag(new THREE.Mesh(
     new THREE.BoxGeometry(0.26, 0.16, 0.022),
-    new THREE.MeshStandardMaterial({ color: 0x0d0800, emissive: 0x1a0e00, roughness: 0.55, metalness: 0.6 })
+    new THREE.MeshStandardMaterial({ color: isDark ? 0x0d0800 : 0x2a2010, emissive: isDark ? 0x1a0e00 : 0x100800, roughness: 0.55, metalness: 0.6 })
   ), "torso");
   panel.position.set(0, 0.07, 0.14);
   const stripe = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.013, 0.013), accentMat());

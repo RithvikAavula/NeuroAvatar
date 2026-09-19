@@ -2,27 +2,27 @@ import { useState, useEffect } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import PillNav from "./PillNav";
 
-/* ── NeuroAvatar mark as data URI ── */
-/* Amber ember mark */
-const LOGO_SVG = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
-  <circle cx="18" cy="18" r="16.5" stroke="%23d97706" stroke-width="1.2" stroke-opacity="0.5"/>
-  <circle cx="18" cy="18" r="11" stroke="%23d97706" stroke-width="0.7" stroke-opacity="0.2"/>
-  <circle cx="18" cy="18" r="4" fill="%23d97706" opacity="0.95"/>
-  <circle cx="18" cy="18" r="7" fill="%23d97706" opacity="0.1"/>
-  <line x1="18" y1="2" x2="18" y2="7.5" stroke="%23d97706" stroke-width="1.1" stroke-opacity="0.45" stroke-linecap="round"/>
-  <line x1="18" y1="28.5" x2="18" y2="34" stroke="%23d97706" stroke-width="1.1" stroke-opacity="0.45" stroke-linecap="round"/>
-  <line x1="2" y1="18" x2="7.5" y2="18" stroke="%23d97706" stroke-width="1.1" stroke-opacity="0.45" stroke-linecap="round"/>
-  <line x1="28.5" y1="18" x2="34" y2="18" stroke="%23d97706" stroke-width="1.1" stroke-opacity="0.45" stroke-linecap="round"/>
-  <line x1="6.5" y1="6.5" x2="10" y2="10" stroke="%23d97706" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round"/>
-  <line x1="26" y1="26" x2="29.5" y2="29.5" stroke="%23d97706" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round"/>
-  <line x1="29.5" y1="6.5" x2="26" y2="10" stroke="%23d97706" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round"/>
-  <line x1="10" y1="26" x2="6.5" y2="29.5" stroke="%23d97706" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round"/>
+/* ── Dynamic NeuroAvatar SVG mark ── */
+const getLogoSvg = (color: string) => `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" fill="none">
+  <circle cx="18" cy="18" r="16.5" stroke="${color}" stroke-width="1.3" stroke-opacity="0.65"/>
+  <circle cx="18" cy="18" r="11" stroke="${color}" stroke-width="0.8" stroke-opacity="0.35"/>
+  <circle cx="18" cy="18" r="4.5" fill="${color}" opacity="0.95"/>
+  <circle cx="18" cy="18" r="7.5" fill="${color}" opacity="0.18"/>
+  <line x1="18" y1="2" x2="18" y2="7.5" stroke="${color}" stroke-width="1.3" stroke-opacity="0.6" stroke-linecap="round"/>
+  <line x1="18" y1="28.5" x2="18" y2="34" stroke="${color}" stroke-width="1.3" stroke-opacity="0.6" stroke-linecap="round"/>
+  <line x1="2" y1="18" x2="7.5" y2="18" stroke="${color}" stroke-width="1.3" stroke-opacity="0.6" stroke-linecap="round"/>
+  <line x1="28.5" y1="18" x2="34" y2="18" stroke="${color}" stroke-width="1.3" stroke-opacity="0.6" stroke-linecap="round"/>
+  <line x1="6.5" y1="6.5" x2="10" y2="10" stroke="${color}" stroke-width="0.9" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="26" y1="26" x2="29.5" y2="29.5" stroke="${color}" stroke-width="0.9" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="29.5" y1="6.5" x2="26" y2="10" stroke="${color}" stroke-width="0.9" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="10" y1="26" x2="6.5" y2="29.5" stroke="${color}" stroke-width="0.9" stroke-opacity="0.4" stroke-linecap="round"/>
 </svg>`)}`;
 
 const NAV_ITEMS = [
   { label: "VISION",       href: "#vision" },
   { label: "TECHNOLOGY",   href: "#technology" },
   { label: "DEMO",         href: "#demo" },
+  { label: "FUTURE SCOPE", href: "#future" },
   { label: "ROADMAP",      href: "#roadmap" },
   { label: "APPLICATIONS", href: "#applications" },
   { label: "RESEARCH",     href: "#research" },
@@ -38,7 +38,12 @@ export default function Navbar() {
 
   /* Glass-on-scroll */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      if (window.scrollY < 140) {
+        setActiveHref("");
+      }
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -50,8 +55,10 @@ export default function Navbar() {
       const el = document.getElementById(id);
       if (!el) return null;
       const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveHref(`#${id}`); },
-        { rootMargin: "-40% 0px -55% 0px" }
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveHref(`#${id}`);
+        },
+        { rootMargin: "-25% 0px -55% 0px" }
       );
       obs.observe(el);
       return obs;
@@ -59,11 +66,17 @@ export default function Navbar() {
     return () => observers.forEach((o) => o?.disconnect());
   }, []);
 
-  /* Theme-aware PillNav colours — Obsidian + Ember */
-  const baseColor  = isDark ? "#0b0d11" : "#f5f0e8";
-  const pillColor  = isDark ? "#171a20" : "#ede7da";
-  const hoverText  = isDark ? "#d97706" : "#92400e";
-  const pillText   = isDark ? "#6b7280" : "#6b5a40";
+  /* Theme-aware PillNav colours & luminous borders */
+  const baseColor    = isDark ? "#080b11" : "#f5f0e6";
+  const pillColor    = isDark ? "#121722" : "#e8e0d2";
+  const hoverText    = isDark ? "#00e5ff" : "#b45309";
+  const pillText     = isDark ? "#94a3b8" : "#1e293b";
+  const navBorder    = isDark ? "rgba(0, 229, 255, 0.24)" : "rgba(180, 83, 9, 0.28)";
+  const navShadow    = isDark
+    ? "0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 229, 255, 0.09)"
+    : "0 8px 28px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(180, 83, 9, 0.08)";
+  const activePillBg = isDark ? "rgba(0, 229, 255, 0.12)" : "rgba(180, 83, 9, 0.14)";
+  const logoColor    = isDark ? "%2300e5ff" : "%23b45309";
 
   const scrollTo = (href: string) => {
     const el = document.querySelector(href);
@@ -73,25 +86,28 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-2" : "py-4"
+        scrolled ? "py-2.5" : "py-5"
       }`}
       style={{
         background: scrolled
           ? isDark
-            ? "hsl(215 28% 5% / 0.88)"
-            : "hsl(38 22% 96% / 0.92)"
+            ? "hsl(215 28% 5% / 0.94)"
+            : "hsl(36 28% 90% / 0.97)"
           : "transparent",
-        backdropFilter: scrolled ? "blur(24px) saturate(1.4)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(24px) saturate(1.4)" : "none",
+        backdropFilter: scrolled ? "blur(30px) saturate(1.7)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(30px) saturate(1.7)" : "none",
         borderBottom: scrolled
-          ? `1px solid hsl(var(--border) / 0.4)`
+          ? isDark
+            ? "1px solid rgba(0, 229, 255, 0.15)"
+            : "1px solid rgba(180, 83, 9, 0.18)"
           : "1px solid transparent",
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4">
-        {/* ── PillNav ── */}
+      {/* Centering wrapper */}
+      <div className="w-full flex items-center justify-center px-4 sm:px-6 relative">
+        {/* Centered pill nav with neurologo.png */}
         <PillNav
-          logo={LOGO_SVG}
+          logo="/neurologo.png"
           logoAlt="NeuroAvatar"
           items={NAV_ITEMS}
           activeHref={activeHref}
@@ -100,64 +116,93 @@ export default function Navbar() {
           pillColor={pillColor}
           hoveredPillTextColor={hoverText}
           pillTextColor={pillText}
+          navBorder={navBorder}
+          navShadow={navShadow}
+          activePillBg={activePillBg}
           initialLoadAnimation={true}
         />
 
-        {/* ── Right controls ── */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Right controls — absolutely positioned */}
+        <div className="flex items-center gap-3 flex-shrink-0 absolute right-4 sm:right-6">
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-full border transition-all duration-300 hover:scale-105"
+            className="w-11 h-11 flex items-center justify-center rounded-full border transition-all duration-300 hover:scale-110 active:scale-95 group relative overflow-hidden"
             style={{
-              borderColor: isDark ? "hsl(215 18% 18%)" : "hsl(38 15% 72%)",
-              background: isDark ? "hsl(215 25% 9% / 0.8)" : "hsl(38 22% 99% / 0.8)",
+              borderColor: isDark ? "hsl(38 90% 52% / 0.45)" : "hsl(38 85% 36% / 0.5)",
+              background: isDark ? "hsl(215 28% 9% / 0.94)" : "hsl(38 32% 96% / 0.96)",
+              boxShadow: isDark
+                ? "0 0 18px hsl(38 90% 52% / 0.2), inset 0 0 8px hsl(38 90% 52% / 0.1)"
+                : "0 2px 12px rgba(0,0,0,0.1), inset 0 0 6px hsl(38 85% 50% / 0.12)",
             }}
-            title={isDark ? "Switch to Light" : "Switch to Dark"}
+            title={isDark ? "Switch to Warm Light Theme" : "Switch to Cyber Dark Theme"}
             aria-label="Toggle theme"
           >
             {isDark ? (
-              /* Sun icon (switch to light) */
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="hsl(38 90% 58%)" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="4"/>
-                <line x1="12" y1="2" x2="12" y2="5"/>
-                <line x1="12" y1="19" x2="12" y2="22"/>
-                <line x1="4.22" y1="4.22" x2="6.34" y2="6.34"/>
-                <line x1="17.66" y1="17.66" x2="19.78" y2="19.78"/>
-                <line x1="2" y1="12" x2="5" y2="12"/>
-                <line x1="19" y1="12" x2="22" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="6.34" y2="17.66"/>
-                <line x1="17.66" y1="6.34" x2="19.78" y2="4.22"/>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="hsl(38 95% 58%)"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                className="transition-transform duration-500 group-hover:rotate-45"
+              >
+                <circle cx="12" cy="12" r="4" />
+                <line x1="12" y1="2" x2="12" y2="5" />
+                <line x1="12" y1="19" x2="12" y2="22" />
+                <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+                <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+                <line x1="2" y1="12" x2="5" y2="12" />
+                <line x1="19" y1="12" x2="22" y2="12" />
+                <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+                <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
               </svg>
             ) : (
-              /* Moon icon (switch to dark) */
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="hsl(215 28% 22%)" strokeWidth="2" strokeLinecap="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="hsl(38 90% 28%)"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                className="transition-transform duration-500 group-hover:-rotate-12"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
             )}
           </button>
 
-          {/* CTA — hidden on small screens */}
+          {/* CTA */}
           <button
             onClick={() => scrollTo("#invest")}
-            className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all duration-300 border"
+            className="hidden lg:flex items-center gap-2 px-6 py-3 rounded-full text-[11.5px] font-black tracking-[0.2em] uppercase transition-all duration-300 border shadow-md hover:scale-105 active:scale-95"
             style={{
-              fontFamily: "'Space Grotesk', monospace",
-              borderColor: isDark ? "hsl(38 90% 52% / 0.35)" : "hsl(38 90% 40% / 0.4)",
-              color: isDark ? "hsl(38 90% 58%)" : "hsl(38 90% 32%)",
-              background: isDark ? "hsl(38 90% 52% / 0.06)" : "hsl(38 90% 44% / 0.06)",
+              fontFamily: "'IBM Plex Mono', monospace",
+              borderColor: isDark ? "hsl(38 90% 52% / 0.55)" : "hsl(38 90% 36% / 0.7)",
+              color: isDark ? "hsl(38 95% 66%)" : "hsl(38 95% 22%)",
+              background: isDark ? "hsl(38 90% 52% / 0.12)" : "hsl(38 90% 44% / 0.15)",
+              boxShadow: isDark
+                ? "0 0 18px hsl(38 90% 52% / 0.18)"
+                : "0 4px 12px rgba(0,0,0,0.08)",
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLButtonElement).style.background = isDark
-                ? "hsl(38 90% 52% / 0.14)"
-                : "hsl(38 90% 44% / 0.12)";
-              (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 16px hsl(38 90% 52% / 0.18)";
+                ? "hsl(38 90% 52% / 0.25)"
+                : "hsl(38 90% 44% / 0.25)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = isDark
+                ? "0 0 28px hsl(38 90% 52% / 0.4)"
+                : "0 6px 18px hsl(38 90% 40% / 0.3)";
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLButtonElement).style.background = isDark
-                ? "hsl(38 90% 52% / 0.06)"
-                : "hsl(38 90% 44% / 0.06)";
-              (e.currentTarget as HTMLButtonElement).style.boxShadow = "none";
+                ? "hsl(38 90% 52% / 0.12)"
+                : "hsl(38 90% 44% / 0.15)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = isDark
+                ? "0 0 18px hsl(38 90% 52% / 0.18)"
+                : "0 4px 12px rgba(0,0,0,0.08)";
             }}
           >
             REQUEST DECK

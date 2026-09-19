@@ -1,8 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-theme">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Automatically purge stale/rogue Service Workers & caches from previous localhost apps
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          var shouldClean = registrations.length > 0 || !!navigator.serviceWorker.controller;
+          for (var reg of registrations) {
+            reg.unregister();
+          }
+          if ('caches' in window) {
+            caches.keys().then(function(keys) {
+              if (keys.length > 0 || shouldClean) {
+                Promise.all(keys.map(function(k) { return caches.delete(k); })).then(function() {
+                  if (shouldClean && !sessionStorage.getItem('__sw_purged')) {
+                    sessionStorage.setItem('__sw_purged', '1');
+                    window.location.reload();
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    </script>
     <title>NeuroAvatar — Your Mind. Your Movement. Your Second Body.</title>
     <meta name="description" content="NeuroAvatar is building a brain-computer interface that enables humans to control humanoid robots through motor intention — transforming robotics into physical extensions of the human body." />
     <meta name="keywords" content="NeuroAvatar, brain computer interface, BCI, humanoid robot, motor intention, telepresence, neuroscience, deep tech robotics" />
@@ -31,7 +54,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/neurologo.png" />
+    <link rel="apple-touch-icon" href="/neurologo.png" />
 
     <script type="application/ld+json">
     {

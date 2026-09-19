@@ -32,15 +32,14 @@ export default function SecondBodySection() {
   const frame = sequence[activeFrame];
 
   return (
-    <section className="relative py-32 overflow-hidden" style={{ background: 'hsl(220 27% 4%)' }}>
+    <section className="relative py-32 overflow-hidden bg-background">
       <div className="section-divider absolute top-0 left-0 right-0" />
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 40% at 50% 50%, hsl(262 40% 7%), hsl(220 27% 4%))' }} />
 
       <div ref={ref} className="relative z-10 max-w-6xl mx-auto px-6">
         <div className={`text-center mb-16 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <div className="tech-label mb-4 opacity-50">VISION DEMONSTRATION</div>
           <h2
-            className="font-bold text-white mb-4"
+            className="font-bold gradient-text-white mb-4"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', letterSpacing: '-0.02em' }}
           >
             THE SECOND BODY
@@ -61,11 +60,11 @@ export default function SecondBodySection() {
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             {/* Human side */}
             <div className="glass-panel-bright rounded-2xl p-6 flex flex-col">
-              <div className="tech-label mb-4 opacity-60">HUMAN OPERATOR</div>
+              <div className="tech-label mb-4 opacity-95 font-extrabold text-[12.5px]">HUMAN OPERATOR</div>
               <div className="flex-1 flex flex-col items-center justify-center gap-4">
                 {/* EEG headset icon */}
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-full bg-[hsl(220_25%_12%)] border border-[hsl(var(--neural-cyan))/20] flex items-center justify-center text-3xl">
+                  <div className="w-16 h-16 rounded-full bg-muted border border-[hsl(var(--neural-cyan))/20] flex items-center justify-center text-3xl">
                     🧑
                   </div>
                   {/* EEG arcs */}
@@ -77,7 +76,7 @@ export default function SecondBodySection() {
                   </svg>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs font-bold text-[hsl(var(--neural-cyan))] mb-1" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <div className="text-xs font-bold text-[hsl(var(--neural-cyan))] mb-1" style={{ fontFamily: "'Outfit', sans-serif" }}>
                     {frame.human}
                   </div>
                   <div className="text-[10px] opacity-40">MOTOR INTENTION</div>
@@ -90,7 +89,7 @@ export default function SecondBodySection() {
               <div className="tech-label mb-6 opacity-50 text-center">NEURAL CHANNEL</div>
               <div className="flex flex-col items-center gap-2 w-full">
                 <div className="w-full h-px bg-[hsl(var(--border))/30]" />
-                <div className={`py-3 px-4 rounded-lg w-full text-center transition-all duration-500 ${playing ? 'border border-[hsl(var(--neural-cyan))/40] bg-[hsl(var(--neural-cyan))/8]' : 'border border-white/5'}`}>
+                <div className={`py-3 px-4 rounded-lg w-full text-center transition-all duration-500 ${playing ? 'border border-[hsl(var(--neural-cyan))/40] bg-[hsl(var(--neural-cyan))/8]' : 'border border-foreground/5'}`}>
                   <div className="tech-label text-[hsl(var(--neural-cyan))]" style={{ fontSize: '9px' }}>
                     {frame.signal}
                   </div>
@@ -113,13 +112,13 @@ export default function SecondBodySection() {
                         return `${x},${y}`;
                       }).join(' ')}
                       fill="none"
-                      stroke={playing ? 'hsl(191 100% 50%)' : 'hsl(210 20% 30%)'}
+                      stroke={playing ? 'hsl(191 100% 50%)' : 'hsl(var(--border))'}
                       strokeWidth="1.5"
                       style={{ filter: playing ? 'drop-shadow(0 0 3px hsl(191 100% 50%))' : 'none' }}
                     />
                   </svg>
                 </div>
-                <div className={`py-2 px-4 rounded text-center text-[10px] font-bold tracking-wider transition-all duration-500 ${playing ? 'text-[hsl(var(--neural-violet))]' : 'text-white/20'}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                <div className={`py-2 px-4 rounded text-center text-[10px] font-bold tracking-wider transition-all duration-500 ${playing ? 'text-[hsl(var(--neural-violet))]' : 'text-foreground/20'}`} style={{ fontFamily: "'Outfit', sans-serif" }}>
                   {frame.note}
                 </div>
                 <div className="w-full h-px bg-[hsl(var(--border))/30]" />
@@ -129,16 +128,16 @@ export default function SecondBodySection() {
 
             {/* Robot side */}
             <div className="glass-panel-bright rounded-2xl p-6 flex flex-col">
-              <div className="tech-label mb-4 opacity-60">HUMANOID AVATAR</div>
+              <div className="tech-label mb-4 opacity-95 font-extrabold text-[12.5px]" style={{ color: "hsl(var(--neural-violet))" }}>HUMANOID AVATAR</div>
               <div className="flex-1 flex flex-col items-center justify-center gap-4">
                 <div className="relative">
-                  <div className="w-16 h-16 rounded-lg bg-[hsl(220_25%_10%)] border border-[hsl(var(--neural-violet))/30] flex items-center justify-center text-3xl"
+                  <div className="w-16 h-16 rounded-lg bg-muted border border-[hsl(var(--neural-violet))/30] flex items-center justify-center text-3xl"
                     style={{ boxShadow: playing ? '0 0 20px hsl(262 80% 60% / 0.2)' : 'none', transition: 'box-shadow 0.5s ease' }}>
                     🤖
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className={`text-xs font-bold mb-1 transition-all duration-500 ${playing ? 'text-[hsl(var(--neural-violet))]' : 'text-white/30'}`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                  <div className={`text-xs font-bold mb-1 transition-all duration-500 ${playing ? 'text-[hsl(var(--neural-violet))]' : 'text-foreground/30'}`} style={{ fontFamily: "'Outfit', sans-serif" }}>
                     {frame.robot}
                   </div>
                   <div className="text-[10px] opacity-40">ROBOT EXECUTION</div>
@@ -157,12 +156,12 @@ export default function SecondBodySection() {
                   className={`flex-shrink-0 flex flex-col items-center gap-1 px-3 py-2 rounded transition-all duration-200 ${
                     i === activeFrame
                       ? 'bg-[hsl(var(--neural-cyan))/10] border border-[hsl(var(--neural-cyan))/30]'
-                      : 'hover:bg-white/3'
+                      : 'hover:bg-foreground/5'
                   }`}
                   data-interactive="true"
                 >
                   <div className="text-[9px] font-mono text-[hsl(var(--neural-cyan))/60]">{s.time}</div>
-                  <div className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === activeFrame ? 'bg-[hsl(var(--neural-cyan))]' : 'bg-white/20'}`} />
+                  <div className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === activeFrame ? 'bg-[hsl(var(--neural-cyan))]' : 'bg-foreground/20'}`} />
                 </button>
               ))}
             </div>
@@ -178,7 +177,7 @@ export default function SecondBodySection() {
                   ? 'border-[hsl(var(--neural-cyan))/40] text-[hsl(var(--neural-cyan))/50] bg-[hsl(var(--neural-cyan))/5]'
                   : 'border-[hsl(var(--neural-cyan))] text-[hsl(var(--neural-cyan))] hover:bg-[hsl(var(--neural-cyan))/10]'
               }`}
-              style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+              style={{ fontFamily: "'Outfit', sans-serif" }}
               data-interactive="true"
             >
               {playing ? '▶ SEQUENCE RUNNING...' : '▶ PLAY SEQUENCE'}

@@ -1,4 +1,4 @@
-import { useInView } from "@/hooks/useInView";
+﻿import { useInView } from "@/hooks/useInView";
 
 const applications = [
   {
@@ -63,12 +63,12 @@ export default function ApplicationsSection() {
   const { ref, inView } = useInView(0.1);
 
   return (
-    <section id="applications" ref={ref} className="relative py-32 overflow-hidden" style={{ background: 'hsl(220 27% 4%)' }}>
+    <section id="applications" ref={ref} className="relative py-32 overflow-hidden bg-background">
       <div className="section-divider absolute top-0 left-0 right-0" />
-      <div className="absolute inset-0 opacity-5" style={{
+      <div className="absolute inset-0 opacity-[0.03]" style={{
         backgroundImage: `
-          linear-gradient(hsl(262 80% 60% / 0.2) 1px, transparent 1px),
-          linear-gradient(90deg, hsl(262 80% 60% / 0.2) 1px, transparent 1px)
+          linear-gradient(hsl(var(--neural-violet) / 0.3) 1px, transparent 1px),
+          linear-gradient(90deg, hsl(var(--neural-violet) / 0.3) 1px, transparent 1px)
         `,
         backgroundSize: '80px 80px',
       }} />
@@ -77,7 +77,7 @@ export default function ApplicationsSection() {
         <div className={`text-center mb-20 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <div className="tech-label mb-4 opacity-50">POTENTIAL APPLICATIONS</div>
           <h2
-            className="font-bold text-white mb-6"
+            className="font-bold gradient-text-white mb-6"
             style={{ fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', letterSpacing: '-0.02em' }}
           >
             RESTORING THE ABILITY
@@ -102,7 +102,7 @@ export default function ApplicationsSection() {
               <div className={`text-2xl mb-4 ${app.color === 'cyan' ? 'text-[hsl(var(--neural-cyan))]' : 'text-[hsl(var(--neural-violet))]'}`}>
                 {app.icon}
               </div>
-              <h3 className="text-sm font-bold text-white mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '0.05em' }}>
+              <h3 className="text-sm font-bold text-foreground mb-2" style={{ fontFamily: "'Outfit', sans-serif", letterSpacing: '0.05em' }}>
                 {app.title}
               </h3>
               <p className="text-xs leading-relaxed opacity-55 mb-4">
@@ -112,7 +112,7 @@ export default function ApplicationsSection() {
                 app.color === 'cyan'
                   ? 'border-[hsl(var(--neural-cyan))/30] text-[hsl(var(--neural-cyan))/70]'
                   : 'border-[hsl(var(--neural-violet))/30] text-[hsl(var(--neural-violet))/70]'
-              }`} style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              }`} style={{ fontFamily: "'Outfit', sans-serif" }}>
                 {app.tag}
               </div>
             </div>

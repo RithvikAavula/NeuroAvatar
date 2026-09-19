@@ -19,6 +19,9 @@ interface PillNavProps {
   pillColor?: string;
   hoveredPillTextColor?: string;
   pillTextColor?: string;
+  navBorder?: string;
+  navShadow?: string;
+  activePillBg?: string;
   onMobileMenuClick?: () => void;
   initialLoadAnimation?: boolean;
 }
@@ -34,6 +37,9 @@ const PillNav = ({
   pillColor = '#1a2535',
   hoveredPillTextColor = '#00e5ff',
   pillTextColor,
+  navBorder,
+  navShadow,
+  activePillBg,
   onMobileMenuClick,
   initialLoadAnimation = true,
 }: PillNavProps) => {
@@ -173,6 +179,9 @@ const PillNav = ({
     ['--pill-bg']: pillColor,
     ['--hover-text']: hoveredPillTextColor,
     ['--pill-text']: resolvedPillTextColor,
+    ['--nav-border']: navBorder ?? 'rgba(255, 255, 255, 0.12)',
+    ['--nav-shadow']: navShadow ?? '0 8px 32px rgba(0, 0, 0, 0.35)',
+    ['--active-pill-bg']: activePillBg ?? 'rgba(255, 255, 255, 0.08)',
   } as React.CSSProperties;
 
   const handleHashClick = (e: React.MouseEvent, href: string) => {

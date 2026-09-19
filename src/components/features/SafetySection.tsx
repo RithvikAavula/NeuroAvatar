@@ -1,4 +1,4 @@
-import { useInView } from "@/hooks/useInView";
+﻿import { useInView } from "@/hooks/useInView";
 
 const safetyLayers = [
   {
@@ -56,15 +56,15 @@ export default function SafetySection() {
   const { ref, inView } = useInView(0.15);
 
   return (
-    <section className="relative py-32 overflow-hidden">
+    <section className="relative py-32 overflow-hidden bg-background">
       <div className="section-divider absolute top-0 left-0 right-0" />
-      <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 40% 50% at 10% 50%, hsl(0 60% 6%), hsl(220 27% 4%))' }} />
+      <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 40% 50% at 10% 50%, hsl(var(--destructive) / 0.04), transparent)' }} />
 
       <div ref={ref} className="relative z-10 max-w-5xl mx-auto px-6">
         <div className={`text-center mb-16 transition-all duration-1000 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <div className="tech-label mb-4 opacity-50">SAFETY ARCHITECTURE</div>
           <h2
-            className="font-bold text-white mb-6"
+            className="font-bold gradient-text-white mb-6"
             style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', letterSpacing: '-0.02em' }}
           >
             SAFETY BY <span className="gradient-text-cyan">DESIGN</span>

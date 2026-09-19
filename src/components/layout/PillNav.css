@@ -10,15 +10,15 @@
 }
 
 .pill-nav {
-  --nav-h: 40px;
-  --logo: 36px;
-  --pill-pad-x: 16px;
-  --pill-gap: 3px;
+  --nav-h: 62px;
+  --logo: 62px;
+  --pill-pad-x: 18px;
+  --pill-gap: 4px;
   width: max-content;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  gap: 6px;
+  gap: 12px;
 }
 
 @media (max-width: 768px) {
@@ -37,26 +37,42 @@
   height: var(--nav-h);
   background: var(--base, #0b0d11);
   border-radius: 9999px;
+  border: 1.5px solid var(--nav-border, rgba(255, 255, 255, 0.14));
+  box-shadow: var(--nav-shadow, 0 10px 36px rgba(0, 0, 0, 0.5));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pill-logo {
-  width: var(--nav-h);
-  height: var(--nav-h);
+  width: var(--logo, 62px);
+  height: var(--logo, 62px);
   border-radius: 50%;
   background: var(--base, #0b0d11);
-  padding: 8px;
+  border: 2px solid var(--nav-border, rgba(255, 255, 255, 0.18));
+  box-shadow: var(--nav-shadow, 0 10px 36px rgba(0, 0, 0, 0.5)), 0 0 22px rgba(0, 229, 255, 0.25);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  padding: 2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   text-decoration: none;
   flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pill-logo:hover {
+  transform: scale(1.15) rotate(4deg);
+  box-shadow: var(--nav-shadow), 0 0 32px rgba(0, 229, 255, 0.45);
 }
 
 .pill-logo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 50%;
   display: block;
 }
 
@@ -86,19 +102,23 @@
   text-decoration: none;
   border-radius: 9999px;
   box-sizing: border-box;
-  font-family: 'Space Grotesk', monospace;
-  font-weight: 700;
-  font-size: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 800;
+  font-size: 12px;
   line-height: 0;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   white-space: nowrap;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: color 0.15s ease;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s ease;
   border: none;
   outline: none;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
 }
 
 .pill .hover-circle {
@@ -136,25 +156,33 @@
   z-index: 3;
   display: inline-block;
   will-change: transform, opacity;
-  font-size: 10px;
-  letter-spacing: 0.15em;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .pill.is-active {
+  color: var(--hover-text, #00e5ff) !important;
+  background: var(--active-pill-bg, rgba(255, 255, 255, 0.08)) !important;
+}
+
+.pill.is-active .pill-label {
   color: var(--hover-text, #00e5ff);
+  font-weight: 800;
 }
 
 .pill.is-active::after {
   content: '';
   position: absolute;
-  bottom: -6px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 10px;
-  height: 10px;
-  background: var(--base, #000);
-  border-radius: 50px;
+  width: 14px;
+  height: 2px;
+  background: var(--hover-text, #00e5ff);
+  border-radius: 9999px;
+  box-shadow: 0 0 8px var(--hover-text, #00e5ff);
   z-index: 4;
 }
 
@@ -166,7 +194,7 @@
   display: none;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1080px) {
   .desktop-only {
     display: none;
   }
@@ -181,7 +209,8 @@
   height: var(--nav-h);
   border-radius: 50%;
   background: var(--base, #0b0d11);
-  border: none;
+  border: 1px solid var(--nav-border, rgba(255, 255, 255, 0.12));
+  box-shadow: var(--nav-shadow, 0 4px 16px rgba(0,0,0,0.2));
   display: none;
   flex-direction: column;
   align-items: center;
@@ -190,12 +219,17 @@
   cursor: pointer;
   padding: 0;
   position: relative;
+  transition: transform 0.2s ease, background 0.3s ease;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1080px) {
   .mobile-menu-button {
     display: flex;
   }
+}
+
+.mobile-menu-button:hover {
+  transform: scale(1.05);
 }
 
 .hamburger-line {
@@ -213,8 +247,10 @@
   right: 1rem;
   background: var(--base, #0b0d11);
   border-radius: 20px;
-  border: 1px solid rgba(217, 119, 6, 0.15);
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(217, 119, 6, 0.05);
+  border: 1px solid var(--nav-border, rgba(217, 119, 6, 0.2));
+  box-shadow: var(--nav-shadow, 0 12px 48px rgba(0, 0, 0, 0.5)), 0 0 0 1px var(--nav-border, rgba(217, 119, 6, 0.05));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
   z-index: 998;
   opacity: 0;
   transform-origin: top center;
@@ -224,21 +260,21 @@
 .mobile-menu-list {
   list-style: none;
   margin: 0;
-  padding: 6px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .mobile-menu-popover .mobile-menu-link {
   display: block;
-  padding: 12px 18px;
+  padding: 13px 20px;
   color: var(--pill-text, #8ca0b8);
   background-color: var(--pill-bg, #1a2535);
   text-decoration: none;
-  font-family: 'Space Grotesk', monospace;
-  font-size: 10px;
-  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   border-radius: 14px;
@@ -248,6 +284,7 @@
 .mobile-menu-popover .mobile-menu-link:hover,
 .mobile-menu-popover .mobile-menu-link.is-active {
   cursor: pointer;
-  background-color: rgba(217, 119, 6, 0.1);
-  color: #d97706;
+  background-color: var(--active-pill-bg, rgba(217, 119, 6, 0.12));
+  color: var(--hover-text, #d97706);
+  border-left: 3px solid var(--hover-text, #d97706);
 }
